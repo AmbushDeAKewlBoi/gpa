@@ -1,0 +1,441 @@
+/* ============================================
+   GPA Calculator — Component Styles
+   ============================================ */
+
+/* --- App Container --- */
+.app-container {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 32px 20px 60px;
+  animation: fadeInUp 0.6s ease-out;
+}
+
+/* --- Header / Hero --- */
+.header {
+  position: relative;
+  background: linear-gradient(135deg, var(--navy-900) 0%, var(--navy-700) 50%, var(--navy-800) 100%);
+  color: var(--white);
+  text-align: center;
+  padding: 40px 28px 36px;
+  border-radius: var(--radius-xl) var(--radius-xl) 0 0;
+  overflow: hidden;
+  box-shadow: var(--shadow-lg);
+}
+
+.header::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(circle at 30% 40%, rgba(212, 165, 32, 0.08) 0%, transparent 60%),
+              radial-gradient(circle at 70% 60%, rgba(255, 255, 255, 0.04) 0%, transparent 40%);
+  pointer-events: none;
+}
+
+.header-content {
+  position: relative;
+  z-index: 1;
+}
+
+.header-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 56px;
+  height: 56px;
+  background: rgba(212, 165, 32, 0.15);
+  border: 2px solid rgba(212, 165, 32, 0.3);
+  border-radius: 50%;
+  margin-bottom: 16px;
+  font-size: 26px;
+}
+
+.header h1 {
+  font-size: 1.9rem;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  margin-bottom: 6px;
+  line-height: 1.2;
+}
+
+.header-subtitle {
+  color: var(--gold-300);
+  font-size: 0.95rem;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+}
+
+.header-divider {
+  width: 60px;
+  height: 3px;
+  background: linear-gradient(90deg, var(--gold-400), var(--gold-300));
+  margin: 14px auto 0;
+  border-radius: 2px;
+}
+
+/* --- Base Stats Banner --- */
+.base-stats-banner {
+  display: flex;
+  justify-content: center;
+  gap: 32px;
+  background: linear-gradient(135deg, var(--navy-800) 0%, var(--navy-900) 100%);
+  padding: 14px 20px;
+  border-bottom: 3px solid var(--gold-500);
+  animation: slideDown 0.5s ease-out 0.2s both;
+}
+
+.base-stat {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--navy-100);
+  font-size: 0.82rem;
+  font-weight: 500;
+}
+
+.base-stat-value {
+  color: var(--gold-300);
+  font-weight: 700;
+  font-size: 0.92rem;
+}
+
+/* --- Main Card Body --- */
+.card-body {
+  background: var(--white);
+  padding: 32px 28px;
+  border-radius: 0 0 var(--radius-xl) var(--radius-xl);
+  border: 1px solid var(--gray-200);
+  border-top: none;
+  box-shadow: var(--shadow-xl);
+}
+
+/* --- Year Section --- */
+.year-section {
+  margin-bottom: 36px;
+  animation: fadeInUp 0.5s ease-out both;
+}
+
+.year-section:nth-child(2) {
+  animation-delay: 0.15s;
+}
+
+.year-section:last-child {
+  margin-bottom: 0;
+}
+
+.section-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 20px;
+  padding-bottom: 12px;
+  border-bottom: 2px solid var(--gray-100);
+}
+
+.section-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  background: var(--navy-50);
+  border-radius: var(--radius-sm);
+  font-size: 18px;
+  flex-shrink: 0;
+}
+
+.section-title {
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: var(--navy-800);
+  letter-spacing: -0.01em;
+}
+
+.section-badge {
+  margin-left: auto;
+  font-size: 0.72rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  padding: 3px 10px;
+  border-radius: 100px;
+  background: var(--navy-50);
+  color: var(--navy-600);
+}
+
+/* --- Course Grid --- */
+.course-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 20px;
+}
+
+/* --- Grade Row --- */
+.grade-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 10px 14px;
+  background: var(--gray-50);
+  border-radius: var(--radius-md);
+  border: 1px solid transparent;
+  transition: all var(--transition-fast);
+}
+
+.grade-row:hover {
+  background: var(--white);
+  border-color: var(--navy-100);
+  box-shadow: var(--shadow-sm);
+}
+
+.course-info {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex: 1;
+  min-width: 0;
+}
+
+.course-name {
+  font-size: 0.88rem;
+  font-weight: 500;
+  color: var(--gray-800);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.weight-tag {
+  display: inline-flex;
+  align-items: center;
+  font-size: 0.62rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  padding: 2px 7px;
+  border-radius: 100px;
+  flex-shrink: 0;
+}
+
+.weight-tag.ap {
+  background: rgba(30, 64, 128, 0.1);
+  color: var(--navy-600);
+}
+
+.weight-tag.honors {
+  background: rgba(212, 165, 32, 0.12);
+  color: #9a7b12;
+}
+
+.weight-tag.de {
+  background: rgba(16, 120, 80, 0.1);
+  color: #0d7a4f;
+}
+
+.weight-tag.standard {
+  background: var(--gray-100);
+  color: var(--gray-500);
+}
+
+/* --- Grade Select Dropdown --- */
+.grade-select-wrapper {
+  position: relative;
+  flex-shrink: 0;
+}
+
+.grade-select {
+  appearance: none;
+  -webkit-appearance: none;
+  font-family: 'Inter', sans-serif;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--navy-800);
+  background: var(--white);
+  border: 2px solid var(--gray-300);
+  border-radius: var(--radius-sm);
+  padding: 6px 32px 6px 12px;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  min-width: 80px;
+  text-align: center;
+}
+
+.grade-select:hover {
+  border-color: var(--navy-300);
+}
+
+.grade-select:focus {
+  outline: none;
+  border-color: var(--gold-400);
+  box-shadow: 0 0 0 3px rgba(212, 165, 32, 0.15);
+}
+
+.grade-select-wrapper::after {
+  content: '▾';
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 0.7rem;
+  color: var(--gray-400);
+  pointer-events: none;
+}
+
+/* --- GPA Result Card --- */
+.gpa-result {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 18px 20px;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--gray-200);
+  transition: all var(--transition-base);
+}
+
+.gpa-result.junior {
+  background: linear-gradient(135deg, var(--navy-50) 0%, var(--white) 100%);
+  border-left: 4px solid var(--navy-600);
+}
+
+.gpa-result.senior {
+  background: linear-gradient(135deg, var(--gold-50) 0%, var(--white) 100%);
+  border-left: 4px solid var(--gold-500);
+  animation: pulse-glow 3s ease-in-out infinite;
+}
+
+.gpa-result-label {
+  font-size: 0.88rem;
+  font-weight: 500;
+  color: var(--gray-700);
+  line-height: 1.4;
+}
+
+.gpa-result-sublabel {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  margin-top: 2px;
+}
+
+.gpa-value-container {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+}
+
+.gpa-value {
+  font-size: 2rem;
+  font-weight: 800;
+  color: var(--navy-800);
+  letter-spacing: -0.04em;
+  line-height: 1;
+  animation: countUp 0.3s ease-out;
+}
+
+.gpa-credits {
+  font-size: 0.72rem;
+  color: var(--text-muted);
+  font-weight: 500;
+  margin-top: 4px;
+}
+
+/* --- Section Divider --- */
+.section-divider {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 32px 0;
+}
+
+.section-divider::before,
+.section-divider::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--gray-200), transparent);
+}
+
+.section-divider-icon {
+  font-size: 18px;
+  color: var(--gray-400);
+}
+
+/* --- Footer --- */
+.footer {
+  text-align: center;
+  margin-top: 24px;
+  padding: 16px;
+  animation: fadeIn 0.6s ease-out 0.4s both;
+}
+
+.footer-text {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  line-height: 1.6;
+}
+
+.footer-text a {
+  color: var(--navy-400);
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.footer-text a:hover {
+  text-decoration: underline;
+}
+
+/* --- Responsive --- */
+@media (max-width: 640px) {
+  .app-container {
+    padding: 16px 12px 40px;
+  }
+
+  .header {
+    padding: 28px 20px 24px;
+    border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+  }
+
+  .header h1 {
+    font-size: 1.5rem;
+  }
+
+  .card-body {
+    padding: 20px 16px;
+    border-radius: 0 0 var(--radius-lg) var(--radius-lg);
+  }
+
+  .base-stats-banner {
+    gap: 16px;
+    padding: 12px 16px;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .grade-row {
+    padding: 10px 10px;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .course-info {
+    flex: 1 1 100%;
+  }
+
+  .grade-select-wrapper {
+    margin-left: auto;
+  }
+
+  .gpa-result {
+    flex-direction: column;
+    gap: 10px;
+    text-align: center;
+    padding: 16px;
+  }
+
+  .gpa-value-container {
+    align-items: center;
+  }
+}
