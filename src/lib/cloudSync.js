@@ -1,4 +1,4 @@
-import { doc, onSnapshot, serverTimestamp, setDoc } from 'firebase/firestore';
+import { doc, getDoc, serverTimestamp, setDoc } from 'firebase/firestore';
 import { db, firebaseEnabled } from './firebase';
 
 const APP_DOC_ID = 'lockin';
@@ -7,23 +7,17 @@ function getUserDoc(uid) {
   return doc(db, 'users', uid, 'apps', APP_DOC_ID);
 }
 
-export function subscribeToUserAppState(uid, onData, onError) {
+export async function fetchUserAppState(uid) {
   if (!firebaseEnabled || !uid) {
-    return () => {};
+    return null;
   }
 
-  return onSnapshot(
-    getUserDoc(uid),
-    (snapshot) => {
-      if (!snapshot.exists()) {
-        onData(null);
-        return;
-      }
+  const snapshot = await getDoc(getUserDoc(uid));
+  if (!snapshot.exists()) {
+    return null;
+  }
 
-      onData(snapshot.data());
-    },
-    onError,
-  );
+  return snapshot.data();
 }
 
 export async function saveUserAppState(uid, state) {

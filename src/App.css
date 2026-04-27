@@ -427,6 +427,11 @@
   color: #bbf7d0;
 }
 
+.tone-warn {
+  background: rgba(245, 158, 11, 0.16);
+  color: #fde68a;
+}
+
 .form-grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
