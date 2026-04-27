@@ -101,12 +101,54 @@
   padding: 18px;
 }
 
+.sync-panel {
+  padding: 18px;
+}
+
 .note-head {
   display: flex;
   align-items: center;
   gap: 8px;
   color: #cbd5e1;
   margin-bottom: 14px;
+}
+
+.sync-summary {
+  display: grid;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.sync-user {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #cbd5e1;
+  min-width: 0;
+}
+
+.sync-user span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.sync-actions {
+  margin-top: 12px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.sync-error {
+  margin-top: 12px;
+  padding: 10px 12px;
+  border-radius: 12px;
+  background: rgba(127, 29, 29, 0.35);
+  border: 1px solid rgba(248, 113, 113, 0.24);
+  color: #fecaca;
+  font-size: 0.88rem;
 }
 
 .focus-count {
@@ -118,6 +160,7 @@
 }
 
 .sidebar-note p,
+.sync-panel p,
 .hero p,
 .task-meta,
 .task-notes,
@@ -714,6 +757,7 @@
 
   .hero,
   .section-card,
+  .sync-panel,
   .sidebar-note {
     padding: 16px;
   }

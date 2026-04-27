@@ -4,23 +4,31 @@ import {
   BookOpen,
   CalendarDays,
   CheckCircle2,
+  Cloud,
+  CloudOff,
   Clock3,
   Flame,
   GraduationCap,
   LayoutDashboard,
   ListTodo,
+  LogIn,
+  LogOut,
   Plus,
   Sparkles,
   Target,
   Trash2,
+  UserCircle2,
 } from 'lucide-react';
 import { Bar, BarChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts';
 import './App.css';
 import { categorizeTasks, calculateStreak, formatRelativeDate, getWeekProgress } from './engine/priority';
+import { normalizeCloudState, saveUserAppState, subscribeToUserAppState } from './lib/cloudSync';
+import { firebaseEnabled, signInWithGoogle, signOutUser, watchAuthState } from './lib/firebase';
 import {
   KEYS,
   getClasses,
   getGPAData,
+  getLocalAppState,
   getTasks,
   saveClasses,
   saveCompletionLog,
@@ -295,6 +303,12 @@ export default function App() {
   const [classForm, setClassForm] = useState(emptyClassForm);
   const [juniorGrades, setJuniorGrades] = useState(() => getGPAData(KEYS.GPA_JUNIOR) || defaultJuniorGrades);
   const [seniorGrades, setSeniorGrades] = useState(() => getGPAData(KEYS.GPA_SENIOR) || defaultSeniorGrades);
+  const [authUser, setAuthUser] = useState(null);
+  const [authReady, setAuthReady] = useState(!firebaseEnabled);
+  const [cloudReady, setCloudReady] = useState(!firebaseEnabled);
+  const [cloudStatus, setCloudStatus] = useState(firebaseEnabled ? 'Waiting for sign-in' : 'Local-only mode');
+  const [cloudError, setCloudError] = useState('');
+  const [syncBusy, setSyncBusy] = useState(false);
 
   useEffect(() => {
     saveClasses(classes);
@@ -312,6 +326,101 @@ export default function App() {
   useEffect(() => {
     saveGPAData(KEYS.GPA_SENIOR, seniorGrades);
   }, [seniorGrades]);
+
+  useEffect(() => {
+    if (!firebaseEnabled) return undefined;
+
+    return watchAuthState((user) => {
+      setAuthUser(user);
+      setAuthReady(true);
+      setCloudReady(!user);
+      setCloudError('');
+      setCloudStatus(user ? 'Syncing with Firestore' : 'Local-only mode');
+      setSyncBusy(false);
+    });
+  }, []);
+
+  useEffect(() => {
+    if (!firebaseEnabled || !authReady || !authUser) {
+      return undefined;
+    }
+
+    const unsubscribe = subscribeToUserAppState(
+      authUser.uid,
+      (remoteData) => {
+        const normalized = normalizeCloudState(remoteData);
+
+        if (normalized) {
+          setTasks(normalized.tasks);
+          setClasses(normalized.classes);
+          setJuniorGrades((Object.keys(normalized.gpa.junior).length ? normalized.gpa.junior : defaultJuniorGrades));
+          setSeniorGrades((Object.keys(normalized.gpa.senior).length ? normalized.gpa.senior : defaultSeniorGrades));
+          setCloudStatus('Cloud sync active');
+        } else {
+          const localState = getLocalAppState();
+          if (localState.tasks.length || localState.classes.length) {
+            setCloudStatus('Uploading local data');
+          } else {
+            setCloudStatus('Cloud sync active');
+          }
+        }
+
+        setCloudReady(true);
+        setSyncBusy(false);
+      },
+      (error) => {
+        console.error(error);
+        setCloudError(error.message || 'Unable to read cloud data.');
+        setCloudStatus('Fell back to local mode');
+        setCloudReady(true);
+        setSyncBusy(false);
+      },
+    );
+
+    return unsubscribe;
+  }, [authReady, authUser]);
+
+  const cloudPayload = useMemo(
+    () => ({
+      tasks,
+      classes,
+      gpa: {
+        junior: juniorGrades,
+        senior: seniorGrades,
+      },
+    }),
+    [classes, juniorGrades, seniorGrades, tasks],
+  );
+
+  useEffect(() => {
+    if (!firebaseEnabled || !authReady || !authUser || !cloudReady) {
+      return;
+    }
+
+    let cancelled = false;
+
+    saveUserAppState(authUser.uid, cloudPayload)
+      .then(() => {
+        if (cancelled) return;
+        setCloudStatus('Cloud sync active');
+        setCloudError('');
+      })
+      .catch((error) => {
+        if (cancelled) return;
+        console.error(error);
+        setCloudError(error.message || 'Unable to sync to Firestore.');
+        setCloudStatus('Fell back to local mode');
+      })
+      .finally(() => {
+        if (!cancelled) {
+          setSyncBusy(false);
+        }
+      });
+
+    return () => {
+      cancelled = true;
+    };
+  }, [authReady, authUser, cloudPayload, cloudReady]);
 
   const completionLog = useMemo(() => buildCompletionLog(tasks), [tasks]);
   const priority = useMemo(() => categorizeTasks(tasks), [tasks]);
@@ -431,6 +540,31 @@ export default function App() {
     setClassForm(emptyClassForm);
   }
 
+  async function handleSignIn() {
+    try {
+      setCloudError('');
+      setSyncBusy(true);
+      await signInWithGoogle();
+    } catch (error) {
+      console.error(error);
+      setCloudError(error.message || 'Google sign-in failed.');
+      setCloudStatus('Sign-in failed');
+      setSyncBusy(false);
+    }
+  }
+
+  async function handleSignOut() {
+    try {
+      await signOutUser();
+    } catch (error) {
+      console.error(error);
+      setCloudError(error.message || 'Unable to sign out.');
+    }
+  }
+
+  const syncTone = firebaseEnabled ? (authUser ? 'good' : 'muted') : 'muted';
+  const syncLabel = firebaseEnabled ? (authUser ? 'Cloud sync' : 'Local mode') : 'Firebase not configured';
+
   return (
     <div className="shell">
       <aside className="sidebar">
@@ -457,6 +591,47 @@ export default function App() {
             </button>
           ))}
         </nav>
+
+        <div className="sync-panel panel">
+          <div className="note-head">
+            {firebaseEnabled ? <Cloud size={16} /> : <CloudOff size={16} />}
+            <span>{syncLabel}</span>
+          </div>
+          <div className="sync-summary">
+            <TaskPill label={cloudStatus} tone={syncTone} />
+            {authUser ? (
+              <div className="sync-user">
+                <UserCircle2 size={16} />
+                <span>{authUser.displayName || authUser.email || 'Signed in'}</span>
+              </div>
+            ) : null}
+          </div>
+          <p>
+            {firebaseEnabled
+              ? authUser
+                ? 'Your tasks, classes, and GPA settings sync to Firestore.'
+                : 'Connect Google to save this LockIn data across devices.'
+              : 'Add Firebase env keys to enable account-based cloud sync.'}
+          </p>
+          {cloudError ? <div className="sync-error">{cloudError}</div> : null}
+          <div className="sync-actions">
+            {firebaseEnabled ? (
+              authUser ? (
+                <button type="button" className="ghost-button" onClick={handleSignOut} disabled={syncBusy}>
+                  <LogOut size={16} />
+                  <span>Sign out</span>
+                </button>
+              ) : (
+                <button type="button" className="secondary-button" onClick={handleSignIn} disabled={syncBusy}>
+                  <LogIn size={16} />
+                  <span>{syncBusy ? 'Connecting...' : 'Continue with Google'}</span>
+                </button>
+              )
+            ) : (
+              <div className="inline-hint">Create a `.env` from `.env.example` to turn sync on.</div>
+            )}
+          </div>
+        </div>
 
         <div className="sidebar-note panel">
           <div className="note-head">
