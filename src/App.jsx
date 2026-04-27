@@ -91,15 +91,6 @@ const defaultSeniorGrades = {
   'AP Physics C: Mechanics': 'A',
 };
 
-const initialClasses = [
-  { id: 'c1', name: 'AP Calculus BC', currentGrade: 91, targetGrade: 95, level: 'AP', credits: 1, color: '#7dd3fc' },
-  { id: 'c2', name: 'AP English Language', currentGrade: 87, targetGrade: 90, level: 'AP', credits: 1, color: '#fca5a5' },
-  { id: 'c3', name: 'AP Psychology', currentGrade: 92, targetGrade: 94, level: 'AP', credits: 1, color: '#c4b5fd' },
-  { id: 'c4', name: 'AP Computer Science Principles', currentGrade: 95, targetGrade: 96, level: 'AP', credits: 1, color: '#67e8f9' },
-  { id: 'c5', name: 'Advanced Cyber Ops Honors', currentGrade: 93, targetGrade: 95, level: 'Honors', credits: 1, color: '#fdba74' },
-  { id: 'c6', name: 'Physics Honors', currentGrade: 93, targetGrade: 94, level: 'Honors', credits: 1, color: '#86efac' },
-];
-
 function shiftDate(days) {
   const date = new Date();
   date.setHours(0, 0, 0, 0);
@@ -107,77 +98,12 @@ function shiftDate(days) {
   return date.toISOString().split('T')[0];
 }
 
-function makeTask(id, classId, title, dueDate, type = 'homework', estimatedMinutes = 45, notes = '') {
-  return {
-    id,
-    title,
-    classId,
-    type,
-    dueDate,
-    estimatedMinutes,
-    status: 'not_started',
-    notes,
-    createdAt: '2026-04-27T00:00:00.000Z',
-  };
-}
+const bulkImportExample = `Class | Assignment | 2026-05-01 | homework | 45
+Class | Assignment | 2026-05-03 | lab | 60
+Class | Assignment | 2026-05-05 | essay | 90`;
 
-const initialTasks = [
-  makeTask('lang-1', 'c2', 'Podcast project source research template', '2026-04-20', 'homework', 60, 'Support at least three researched sources in the Week 1 folder.'),
-  makeTask('lang-2', 'c2', 'Writer Notebook 7: Toxic Baby', '2026-04-23', 'homework', 35, 'Respond to the Toxic Baby TED Talk questions.'),
-  makeTask('lang-3', 'c2', 'Listen/read Toxic Baby TED Talk transcript', '2026-04-25', 'homework', 30, 'Prep before Writer Notebook response.'),
-  makeTask('lang-4', 'c2', 'Writer Notebook 8: Plastic Bags essay', '2026-04-28', 'homework', 40, 'Respond to Ben Adler plastic bag prompt.'),
-  makeTask('lang-5', 'c2', 'Read Plastic Bags article', '2026-04-28', 'homework', 30, 'Read before in-class Writer Notebook response.'),
-  makeTask('lang-6', 'c2', 'Podcast planned and scripted', '2026-04-28', 'project', 90, 'Use the provided research template before recording in class.'),
-  makeTask('lang-7', 'c2', 'Writer Notebook 9: climate optimism article', '2026-04-30', 'homework', 45, 'Answer audience, optimism, and argument questions.'),
-  makeTask('lang-8', 'c2', 'Podcast recording library sign-up', '2026-05-01', 'project', 20, 'Week of 4/29-5/1 during class.'),
-  makeTask('lang-9', 'c2', 'Submit completed Sustainably Speaking podcast', '2026-05-01', 'project', 120, 'Upload 10-15 minute episode to WeVideo and submit Works Cited plus transcript to Schoology.'),
-
-  makeTask('psych-1', 'c3', 'Unit 9 formatives due', '2026-04-15', 'homework', 45, 'Due at the start of next class.'),
-  makeTask('psych-2', 'c3', 'AMSCO Unit 9 workbook', '2026-04-16', 'homework', 60, 'Late deadline was April 22 at 4:18pm.'),
-  makeTask('psych-3', 'c3', 'Topic Review Quizzes Units 1 and 5', '2026-04-17', 'quiz', 45, 'Due 11:59pm for 10 minor summative points each.'),
-  makeTask('psych-4', 'c3', 'Topic Review Quizzes Units 3 and 9', '2026-04-24', 'quiz', 45, 'Due 11:59pm for 10 minor summative points each.'),
-  makeTask('psych-5', 'c3', 'Unit 3 formatives and 3.3 review', '2026-04-28', 'homework', 60, 'Due at the start of next class.'),
-  makeTask('psych-6', 'c3', 'Unit 3 test', '2026-04-28', 'test', 75, 'Multiple choice.'),
-  makeTask('psych-7', 'c3', '2026 AP Exam Review Packet', '2026-04-30', 'homework', 80, 'Due at the start of next class.'),
-  makeTask('psych-8', 'c3', 'AP Exam cumulative MCQ test', '2026-04-30', 'test', 90, 'Full practice AP multiple choice exam.'),
-  makeTask('psych-9', 'c3', 'AMSCO Unit 3 workbook late deadline', '2026-05-04', 'homework', 60, 'Late deadline 4:18pm.'),
-  makeTask('psych-10', 'c3', 'Topic Review Quizzes Round II', '2026-05-12', 'quiz', 60, 'Due at 12:00pm.'),
-  makeTask('psych-11', 'c3', 'AP Psychology Exam', '2026-05-12', 'exam', 120, 'Exam at 12:00pm.'),
-
-  makeTask('physics-1', 'c6', 'Wave-Particle Duality of Light', '2026-04-27', 'homework', 45, 'Due 11:59pm.'),
-  makeTask('physics-2', 'c6', 'Optics Assessment', '2026-04-29', 'test', 60, 'Due 4:20pm.'),
-  makeTask('physics-3', 'c6', 'CB: Wave Interference', '2026-05-01', 'homework', 45, 'Due 11:59pm.'),
-  makeTask('physics-4', 'c6', 'Wave Interactions', '2026-05-06', 'homework', 45, 'Due 4:20pm.'),
-  makeTask('physics-5', 'c6', 'Speed of Sound Lab', '2026-05-06', 'lab', 75, 'Due 11:59pm.'),
-  makeTask('physics-6', 'c6', 'Sound Check', '2026-05-08', 'quiz', 45, 'Due 4:20pm.'),
-  makeTask('physics-7', 'c6', 'Making Music CB: Name that Harmonic - Strings', '2026-05-11', 'homework', 35, 'Due 11:59pm.'),
-  makeTask('physics-8', 'c6', 'Making Music CB: Name that Harmonic - Open End Air Columns', '2026-05-11', 'homework', 35, 'Due 11:59pm.'),
-  makeTask('physics-9', 'c6', 'Making Music CB: Name that Harmonic - Closed End Air Columns', '2026-05-11', 'homework', 35, 'Due 11:59pm.'),
-  makeTask('physics-10', 'c6', 'Making Music: Instrument EC', '2026-05-13', 'project', 45, 'Due 9:30am.'),
-  makeTask('physics-11', 'c6', 'Making Music Project Submission', '2026-05-13', 'project', 90, 'Due 9:30am.'),
-  makeTask('physics-12', 'c6', 'Making Music Project', '2026-05-13', 'project', 90, 'Due 9:30am.'),
-  makeTask('physics-13', 'c6', 'Nuclear Decay/Half Life Lab', '2026-05-13', 'lab', 75, 'Due 4:30pm.'),
-
-  makeTask('calc-1', 'c1', 'AP Prep Quiz', '2026-04-23', 'quiz', 45, 'From April calendar.'),
-  makeTask('calc-2', 'c1', 'HW #13 due', '2026-04-23', 'homework', 45, 'From April calendar.'),
-  makeTask('calc-3', 'c1', 'PS #13 due', '2026-04-24', 'homework', 45, 'From April calendar.'),
-  makeTask('calc-4', 'c1', 'AP Mock Exam non-calculator', '2026-04-28', 'exam', 60, '60 minutes.'),
-  makeTask('calc-5', 'c1', 'AP Mock Exam non-calculator', '2026-04-29', 'exam', 60, '60 minutes.'),
-  makeTask('calc-6', 'c1', 'AP Mock Exam calculator', '2026-04-30', 'exam', 45, '45 minutes.'),
-
-  makeTask('csp-1', 'c4', 'Create Task deadline', '2026-04-21', 'project', 120, 'Due 11:59pm.'),
-  makeTask('csp-2', 'c4', 'Review Big Idea 1 and FRQ 1', '2026-04-20', 'homework', 45, 'From CSP calendar.'),
-  makeTask('csp-3', 'c4', 'Big Idea 2 and FRQ 2a', '2026-04-23', 'homework', 45, 'From CSP calendar.'),
-  makeTask('csp-4', 'c4', 'Big Idea 3 Day 1', '2026-04-27', 'homework', 45, 'From CSP calendar.'),
-  makeTask('csp-5', 'c4', 'Big Idea 3 Day 2', '2026-04-29', 'homework', 45, 'From CSP calendar.'),
-  makeTask('csp-6', 'c4', 'Big Idea 4', '2026-04-30', 'homework', 45, 'From CSP calendar.'),
-
-  makeTask('cyber-1', 'c5', 'A+ certification work', '2026-04-28', 'test', 90, 'Cyber certification item from Tuesday.'),
-];
-
-const bulkImportExample = `AP Calculus BC | Integration worksheet | 2026-05-01 | homework | 45
-Physics Honors | Momentum lab | 2026-05-03 | lab | 60
-AP English Language | Essay draft | 2026-05-05 | essay | 90`;
+const seededTaskIdPattern = /^(t\d+|lang-\d+|psych-\d+|physics-\d+|calc-\d+|csp-\d+|cyber-\d+)$/;
+const seededClassIds = new Set(['c1', 'c2', 'c3', 'c4', 'c5', 'c6']);
 
 const emptyTaskForm = {
   title: '',
@@ -324,8 +250,13 @@ function GradeSelect({ course, value, onChange }) {
   );
 }
 
-function hasOldStarterData(savedTasks) {
-  return savedTasks.some((task) => task.id === 't15' && task.title === 'Calc BC mock AP section');
+function removeSeededTasks(savedTasks) {
+  return savedTasks.filter((task) => !seededTaskIdPattern.test(task.id));
+}
+
+function removeUnusedSeededClasses(savedClasses, remainingTasks) {
+  const usedClassIds = new Set(remainingTasks.map((task) => task.classId));
+  return savedClasses.filter((course) => !seededClassIds.has(course.id) || usedClassIds.has(course.id));
 }
 
 export default function App() {
@@ -333,11 +264,11 @@ export default function App() {
   const [classes, setClasses] = useState(() => {
     const savedClasses = getClasses();
     const savedTasks = getTasks();
-    return savedClasses.length && !hasOldStarterData(savedTasks) ? savedClasses : initialClasses;
+    return removeUnusedSeededClasses(savedClasses, removeSeededTasks(savedTasks));
   });
   const [tasks, setTasks] = useState(() => {
     const savedTasks = getTasks();
-    return savedTasks.length && !hasOldStarterData(savedTasks) ? savedTasks : initialTasks;
+    return removeSeededTasks(savedTasks);
   });
   const [taskForm, setTaskForm] = useState(emptyTaskForm);
   const [classForm, setClassForm] = useState(emptyClassForm);
@@ -393,16 +324,30 @@ export default function App() {
     let cancelled = false;
 
     fetchUserAppState(authUser.uid)
-      .then((remoteData) => {
+      .then(async (remoteData) => {
         if (cancelled) return;
         const normalized = normalizeCloudState(remoteData);
 
         if (normalized) {
-          setTasks(normalized.tasks);
-          setClasses(normalized.classes);
+          const cleanedTasks = removeSeededTasks(normalized.tasks);
+          const cleanedClasses = removeUnusedSeededClasses(normalized.classes, cleanedTasks);
+          const removedSeededData = cleanedTasks.length !== normalized.tasks.length || cleanedClasses.length !== normalized.classes.length;
+
+          setTasks(cleanedTasks);
+          setClasses(cleanedClasses);
           setJuniorGrades(Object.keys(normalized.gpa.junior).length ? normalized.gpa.junior : defaultJuniorGrades);
           setSeniorGrades(Object.keys(normalized.gpa.senior).length ? normalized.gpa.senior : defaultSeniorGrades);
-          setCloudStatus('Cloud data loaded');
+
+          if (removedSeededData) {
+            await saveUserAppState(authUser.uid, {
+              tasks: cleanedTasks,
+              classes: cleanedClasses,
+              gpa: normalized.gpa,
+            });
+            setCloudStatus('Seeded data removed from cloud');
+          } else {
+            setCloudStatus('Cloud data loaded');
+          }
         } else {
           const localState = getLocalAppState();
           if (localState.tasks.length || localState.classes.length) {
@@ -556,12 +501,6 @@ export default function App() {
       ...current,
       classId: current.classId === classId ? '' : current.classId,
     }));
-  }
-
-  function loadInitialAssignments() {
-    setClasses(initialClasses);
-    setTasks(initialTasks);
-    setTaskForm((current) => ({ ...current, classId: initialClasses[0].id }));
   }
 
   function handleBulkImport(event) {
@@ -1039,11 +978,6 @@ export default function App() {
                 ) : (
                   <div className="empty-state with-actions">
                     <p>No active tasks yet.</p>
-                    <div className="empty-actions">
-                      <button type="button" className="secondary-button" onClick={loadInitialAssignments}>
-                        Load my assignments
-                      </button>
-                    </div>
                   </div>
                 )}
               </SectionCard>
@@ -1122,9 +1056,6 @@ export default function App() {
                     <button type="submit" className="primary-button">
                       <Plus size={16} />
                       <span>Add class</span>
-                    </button>
-                    <button type="button" className="secondary-button" onClick={loadInitialAssignments}>
-                      Load my assignments
                     </button>
                     <button type="button" className="ghost-button" onClick={clearAllData}>
                       Clear all
