@@ -1,9 +1,9 @@
 .shell {
   min-height: 100vh;
   display: grid;
-  grid-template-columns: 260px minmax(0, 1fr);
-  gap: 24px;
-  padding: 24px;
+  grid-template-columns: 196px minmax(0, 1fr);
+  gap: 18px;
+  padding: 18px;
 }
 
 .sidebar,
@@ -14,31 +14,31 @@
 .panel {
   background: linear-gradient(180deg, rgba(15, 23, 42, 0.92), rgba(15, 23, 42, 0.82));
   border: 1px solid rgba(148, 163, 184, 0.16);
-  border-radius: 18px;
-  box-shadow: 0 24px 80px rgba(2, 6, 23, 0.35);
+  border-radius: 14px;
+  box-shadow: 0 18px 56px rgba(2, 6, 23, 0.28);
   backdrop-filter: blur(18px);
 }
 
 .sidebar {
   display: flex;
   flex-direction: column;
-  gap: 18px;
+  gap: 12px;
   position: sticky;
-  top: 24px;
-  height: calc(100vh - 48px);
+  top: 18px;
+  height: calc(100vh - 36px);
 }
 
 .brand-block {
   display: flex;
   align-items: center;
-  gap: 12px;
-  padding: 16px 10px 4px;
+  gap: 10px;
+  padding: 10px 8px 2px;
 }
 
 .brand-mark,
 .section-icon-wrap {
-  width: 38px;
-  height: 38px;
+  width: 34px;
+  height: 34px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -56,7 +56,7 @@
 }
 
 .brand-block h1 {
-  font-size: 1.4rem;
+  font-size: 1.2rem;
   line-height: 1;
 }
 
@@ -72,7 +72,7 @@
 
 .nav-list {
   display: grid;
-  gap: 8px;
+  gap: 6px;
 }
 
 .nav-button {
@@ -81,9 +81,9 @@
   color: #94a3b8;
   display: flex;
   align-items: center;
-  gap: 10px;
-  padding: 12px 14px;
-  border-radius: 14px;
+  gap: 9px;
+  padding: 10px 11px;
+  border-radius: 12px;
   font: inherit;
   text-align: left;
   cursor: pointer;
@@ -98,11 +98,11 @@
 
 .sidebar-note {
   margin-top: auto;
-  padding: 18px;
+  padding: 14px;
 }
 
 .sync-panel {
-  padding: 18px;
+  padding: 14px;
 }
 
 .note-head {
@@ -110,13 +110,13 @@
   align-items: center;
   gap: 8px;
   color: #cbd5e1;
-  margin-bottom: 14px;
+  margin-bottom: 10px;
 }
 
 .sync-summary {
   display: grid;
-  gap: 10px;
-  margin-bottom: 10px;
+  gap: 8px;
+  margin-bottom: 8px;
 }
 
 .sync-user {
@@ -134,7 +134,7 @@
 }
 
 .sync-actions {
-  margin-top: 12px;
+  margin-top: 10px;
   display: flex;
   align-items: center;
   gap: 10px;
@@ -152,7 +152,7 @@
 }
 
 .focus-count {
-  font-size: 2.6rem;
+  font-size: 2rem;
   line-height: 1;
   font-weight: 700;
   color: #f8fafc;
@@ -175,11 +175,11 @@
 
 .content {
   display: grid;
-  gap: 20px;
+  gap: 16px;
 }
 
 .hero {
-  padding: 28px;
+  padding: 18px 20px;
   display: flex;
   align-items: flex-end;
   justify-content: space-between;
@@ -195,7 +195,7 @@
 }
 
 .hero h2 {
-  font-size: clamp(2rem, 4vw, 3.4rem);
+  font-size: clamp(1.65rem, 3vw, 2.6rem);
   letter-spacing: 0;
   line-height: 1.02;
   margin: 8px 0 10px;
@@ -204,8 +204,8 @@
 .hero-stats {
   display: grid;
   grid-template-columns: repeat(3, minmax(92px, 1fr));
-  gap: 10px;
-  min-width: 320px;
+  gap: 8px;
+  min-width: 280px;
 }
 
 .hero-stat,
@@ -214,11 +214,11 @@
 .insight-card {
   background: rgba(15, 23, 42, 0.7);
   border: 1px solid rgba(148, 163, 184, 0.12);
-  border-radius: 16px;
+  border-radius: 12px;
 }
 
 .hero-stat {
-  padding: 14px 16px;
+  padding: 11px 12px;
 }
 
 .hero-stat strong,
@@ -231,14 +231,14 @@
 }
 
 .hero-stat strong {
-  font-size: 1.45rem;
+  font-size: 1.25rem;
   margin-top: 4px;
 }
 
 .view-grid {
   display: grid;
-  grid-template-columns: minmax(0, 1.45fr) minmax(320px, 0.8fr);
-  gap: 20px;
+  grid-template-columns: minmax(0, 1.65fr) minmax(280px, 0.75fr);
+  gap: 16px;
   align-items: start;
 }
 
@@ -249,11 +249,11 @@
 .dashboard-column,
 .dashboard-rail {
   display: grid;
-  gap: 20px;
+  gap: 16px;
 }
 
 .section-card {
-  padding: 20px;
+  padding: 16px;
 }
 
 .section-heading {
@@ -261,7 +261,7 @@
   align-items: center;
   justify-content: space-between;
   gap: 14px;
-  margin-bottom: 16px;
+  margin-bottom: 13px;
 }
 
 .section-card h3 {
@@ -272,11 +272,11 @@
 .brief-grid {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 12px;
+  gap: 10px;
 }
 
 .metric-card {
-  padding: 14px;
+  padding: 12px;
 }
 
 .metric-card span,
@@ -296,16 +296,16 @@
 .insight-stack,
 .gpa-grid {
   display: grid;
-  gap: 12px;
+  gap: 10px;
 }
 
 .task-row {
   display: grid;
   grid-template-columns: auto minmax(0, 1fr) auto;
-  gap: 12px;
+  gap: 10px;
   align-items: start;
-  padding: 14px;
-  border-radius: 16px;
+  padding: 12px;
+  border-radius: 12px;
   background: rgba(15, 23, 42, 0.56);
   border: 1px solid rgba(148, 163, 184, 0.12);
 }
@@ -322,8 +322,8 @@
 }
 
 .status-toggle {
-  width: 34px;
-  height: 34px;
+  width: 30px;
+  height: 30px;
   border-radius: 50%;
   background: rgba(30, 41, 59, 0.96);
   color: #64748b;
@@ -353,6 +353,7 @@
 .task-main-top {
   justify-content: space-between;
   align-items: flex-start;
+  flex-wrap: wrap;
 }
 
 .task-title,
@@ -363,8 +364,8 @@
 
 .task-meta {
   flex-wrap: wrap;
-  font-size: 0.84rem;
-  margin-top: 6px;
+  font-size: 0.8rem;
+  margin-top: 5px;
 }
 
 .task-course-dot {
@@ -376,17 +377,17 @@
 }
 
 .task-notes {
-  font-size: 0.88rem;
-  margin-top: 8px;
+  font-size: 0.84rem;
+  margin-top: 6px;
 }
 
 .icon-button {
-  width: 34px;
-  height: 34px;
+  width: 30px;
+  height: 30px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  border-radius: 12px;
+  border-radius: 10px;
   background: rgba(30, 41, 59, 0.9);
   color: #cbd5e1;
 }
@@ -403,8 +404,8 @@
 .task-pill {
   display: inline-flex;
   align-items: center;
-  min-height: 28px;
-  padding: 0 10px;
+  min-height: 24px;
+  padding: 0 8px;
   border-radius: 999px;
   font-size: 0.72rem;
   color: #dbeafe;
@@ -435,7 +436,7 @@
 .form-grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 14px;
+  gap: 12px;
 }
 
 .field-group {
@@ -457,9 +458,9 @@
   border: 1px solid rgba(148, 163, 184, 0.18);
   background: rgba(2, 6, 23, 0.45);
   color: #f8fafc;
-  border-radius: 14px;
-  min-height: 46px;
-  padding: 0 14px;
+  border-radius: 12px;
+  min-height: 42px;
+  padding: 0 12px;
   font: inherit;
 }
 
@@ -470,9 +471,19 @@
 }
 
 .textarea {
-  min-height: 108px;
+  min-height: 96px;
   padding-top: 12px;
   resize: vertical;
+}
+
+.bulk-import {
+  display: grid;
+  gap: 12px;
+}
+
+.bulk-textarea {
+  min-height: 132px;
+  line-height: 1.5;
 }
 
 .select-field {
@@ -482,9 +493,9 @@
 .primary-button,
 .secondary-button,
 .ghost-button {
-  min-height: 44px;
-  border-radius: 14px;
-  padding: 0 16px;
+  min-height: 40px;
+  border-radius: 12px;
+  padding: 0 13px;
   border: 1px solid transparent;
   color: #f8fafc;
   font: inherit;
@@ -515,8 +526,8 @@
 }
 
 .empty-state {
-  padding: 18px;
-  border-radius: 16px;
+  padding: 14px;
+  border-radius: 12px;
   background: rgba(15, 23, 42, 0.46);
   border: 1px dashed rgba(148, 163, 184, 0.16);
 }
@@ -536,12 +547,12 @@
 .gpa-row {
   background: rgba(15, 23, 42, 0.56);
   border: 1px solid rgba(148, 163, 184, 0.12);
-  border-radius: 16px;
+  border-radius: 12px;
 }
 
 .mini-class,
 .class-card {
-  padding: 14px;
+  padding: 12px;
 }
 
 .mini-class-top {
@@ -557,8 +568,8 @@
 }
 
 .day-chip {
-  min-height: 72px;
-  border-radius: 16px;
+  min-height: 60px;
+  border-radius: 12px;
   background: rgba(15, 23, 42, 0.56);
   border: 1px solid rgba(148, 163, 184, 0.12);
   display: grid;
@@ -587,7 +598,7 @@
 .week-strip {
   display: grid;
   grid-template-columns: repeat(7, minmax(0, 1fr));
-  gap: 10px;
+  gap: 8px;
 }
 
 .streak-card {
@@ -638,7 +649,7 @@
 }
 
 .gpa-summary-card {
-  padding: 16px;
+  padding: 14px;
 }
 
 .gpa-summary-card strong {
@@ -682,7 +693,7 @@
 }
 
 .insight-card {
-  padding: 16px;
+  padding: 14px;
 }
 
 .tone-strong {
