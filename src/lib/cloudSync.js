@@ -1,36 +1,39 @@
-import { doc, getDoc, serverTimestamp, setDoc } from 'firebase/firestore';
-import { db, firebaseEnabled } from './firebase';
+import { supabase, supabaseEnabled } from './supabase';
 
-const APP_DOC_ID = 'lockin';
-
-function getUserDoc(uid) {
-  return doc(db, 'users', uid, 'apps', APP_DOC_ID);
-}
+const APP_ID = 'lockin';
 
 export async function fetchUserAppState(uid) {
-  if (!firebaseEnabled || !uid) {
+  if (!supabaseEnabled || !uid) {
     return null;
   }
 
-  const snapshot = await getDoc(getUserDoc(uid));
-  if (!snapshot.exists()) {
-    return null;
-  }
+  const { data, error } = await supabase
+    .from('app_states')
+    .select('tasks, classes, gpa')
+    .eq('user_id', uid)
+    .eq('app_id', APP_ID)
+    .maybeSingle();
 
-  return snapshot.data();
+  if (error) throw error;
+  return data;
 }
 
 export async function saveUserAppState(uid, state) {
-  if (!firebaseEnabled || !uid) return;
+  if (!supabaseEnabled || !uid) return;
 
-  await setDoc(
-    getUserDoc(uid),
+  const { error } = await supabase.from('app_states').upsert(
     {
-      ...state,
-      updatedAt: serverTimestamp(),
+      user_id: uid,
+      app_id: APP_ID,
+      tasks: state.tasks || [],
+      classes: state.classes || [],
+      gpa: state.gpa || {},
+      updated_at: new Date().toISOString(),
     },
-    { merge: true },
+    { onConflict: 'user_id,app_id' },
   );
+
+  if (error) throw error;
 }
 
 export function normalizeCloudState(data) {

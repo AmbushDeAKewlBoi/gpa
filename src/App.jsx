@@ -24,7 +24,7 @@ import { Bar, BarChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YAxi
 import './App.css';
 import { categorizeTasks, calculateStreak, formatRelativeDate, getWeekProgress } from './engine/priority';
 import { fetchUserAppState, normalizeCloudState, saveUserAppState } from './lib/cloudSync';
-import { firebaseEnabled, signInWithGoogle, signOutUser, watchAuthState } from './lib/firebase';
+import { signInWithGoogle, signOutUser, supabaseEnabled, watchAuthState } from './lib/supabase';
 import {
   KEYS,
   getClasses,
@@ -102,8 +102,8 @@ const bulkImportExample = `Class | Assignment | 2026-05-01 | homework | 45
 Class | Assignment | 2026-05-03 | lab | 60
 Class | Assignment | 2026-05-05 | essay | 90`;
 
-const seededTaskIdPattern = /^(t\d+|lang-\d+|psych-\d+|physics-\d+|calc-\d+|csp-\d+|cyber-\d+)$/;
-const seededClassIds = new Set(['c1', 'c2', 'c3', 'c4', 'c5', 'c6']);
+const legacyTaskIdPattern = /^(t\d+|lang-\d+|psych-\d+|physics-\d+|calc-\d+|csp-\d+|cyber-\d+)$/;
+const legacyClassIds = new Set(['c1', 'c2', 'c3', 'c4', 'c5', 'c6']);
 
 const emptyTaskForm = {
   title: '',
@@ -250,13 +250,13 @@ function GradeSelect({ course, value, onChange }) {
   );
 }
 
-function removeSeededTasks(savedTasks) {
-  return savedTasks.filter((task) => !seededTaskIdPattern.test(task.id));
+function removeLegacyTasks(savedTasks) {
+  return savedTasks.filter((task) => !legacyTaskIdPattern.test(task.id));
 }
 
-function removeUnusedSeededClasses(savedClasses, remainingTasks) {
+function removeUnusedLegacyClasses(savedClasses, remainingTasks) {
   const usedClassIds = new Set(remainingTasks.map((task) => task.classId));
-  return savedClasses.filter((course) => !seededClassIds.has(course.id) || usedClassIds.has(course.id));
+  return savedClasses.filter((course) => !legacyClassIds.has(course.id) || usedClassIds.has(course.id));
 }
 
 export default function App() {
@@ -264,11 +264,11 @@ export default function App() {
   const [classes, setClasses] = useState(() => {
     const savedClasses = getClasses();
     const savedTasks = getTasks();
-    return removeUnusedSeededClasses(savedClasses, removeSeededTasks(savedTasks));
+    return removeUnusedLegacyClasses(savedClasses, removeLegacyTasks(savedTasks));
   });
   const [tasks, setTasks] = useState(() => {
     const savedTasks = getTasks();
-    return removeSeededTasks(savedTasks);
+    return removeLegacyTasks(savedTasks);
   });
   const [taskForm, setTaskForm] = useState(emptyTaskForm);
   const [classForm, setClassForm] = useState(emptyClassForm);
@@ -276,9 +276,9 @@ export default function App() {
   const [juniorGrades, setJuniorGrades] = useState(() => getGPAData(KEYS.GPA_JUNIOR) || defaultJuniorGrades);
   const [seniorGrades, setSeniorGrades] = useState(() => getGPAData(KEYS.GPA_SENIOR) || defaultSeniorGrades);
   const [authUser, setAuthUser] = useState(null);
-  const [authReady, setAuthReady] = useState(!firebaseEnabled);
-  const [cloudReady, setCloudReady] = useState(!firebaseEnabled);
-  const [cloudStatus, setCloudStatus] = useState(firebaseEnabled ? 'Waiting for sign-in' : 'Local-only mode');
+  const [authReady, setAuthReady] = useState(!supabaseEnabled);
+  const [cloudReady, setCloudReady] = useState(!supabaseEnabled);
+  const [cloudStatus, setCloudStatus] = useState(supabaseEnabled ? 'Waiting for sign-in' : 'Local-only mode');
   const [cloudError, setCloudError] = useState('');
   const [syncBusy, setSyncBusy] = useState(false);
   const [cloudDirty, setCloudDirty] = useState(false);
@@ -302,7 +302,7 @@ export default function App() {
   }, [seniorGrades]);
 
   useEffect(() => {
-    if (!firebaseEnabled) return undefined;
+    if (!supabaseEnabled) return undefined;
 
     return watchAuthState((user) => {
       initializingCloudRef.current = true;
@@ -311,13 +311,13 @@ export default function App() {
       setCloudReady(!user);
       setCloudDirty(false);
       setCloudError('');
-      setCloudStatus(user ? 'Syncing with Firestore' : 'Local-only mode');
+      setCloudStatus(user ? 'Syncing with Supabase' : 'Local-only mode');
       setSyncBusy(Boolean(user));
     });
   }, []);
 
   useEffect(() => {
-    if (!firebaseEnabled || !authReady || !authUser) {
+    if (!supabaseEnabled || !authReady || !authUser) {
       return undefined;
     }
 
@@ -329,22 +329,22 @@ export default function App() {
         const normalized = normalizeCloudState(remoteData);
 
         if (normalized) {
-          const cleanedTasks = removeSeededTasks(normalized.tasks);
-          const cleanedClasses = removeUnusedSeededClasses(normalized.classes, cleanedTasks);
-          const removedSeededData = cleanedTasks.length !== normalized.tasks.length || cleanedClasses.length !== normalized.classes.length;
+          const cleanedTasks = removeLegacyTasks(normalized.tasks);
+          const cleanedClasses = removeUnusedLegacyClasses(normalized.classes, cleanedTasks);
+          const removedLegacyData = cleanedTasks.length !== normalized.tasks.length || cleanedClasses.length !== normalized.classes.length;
 
           setTasks(cleanedTasks);
           setClasses(cleanedClasses);
           setJuniorGrades(Object.keys(normalized.gpa.junior).length ? normalized.gpa.junior : defaultJuniorGrades);
           setSeniorGrades(Object.keys(normalized.gpa.senior).length ? normalized.gpa.senior : defaultSeniorGrades);
 
-          if (removedSeededData) {
+          if (removedLegacyData) {
             await saveUserAppState(authUser.uid, {
               tasks: cleanedTasks,
               classes: cleanedClasses,
               gpa: normalized.gpa,
             });
-            setCloudStatus('Seeded data removed from cloud');
+            setCloudStatus('Old starter data removed from Supabase');
           } else {
             setCloudStatus('Cloud data loaded');
           }
@@ -390,7 +390,7 @@ export default function App() {
   );
 
   useEffect(() => {
-    if (!firebaseEnabled || !authUser || !cloudReady || initializingCloudRef.current) {
+    if (!supabaseEnabled || !authUser || !cloudReady || initializingCloudRef.current) {
       return;
     }
 
@@ -601,15 +601,15 @@ export default function App() {
       setCloudStatus('Cloud sync active');
     } catch (error) {
       console.error(error);
-      setCloudError(error.message || 'Unable to sync to Firestore.');
+      setCloudError(error.message || 'Unable to sync to Supabase.');
       setCloudStatus('Save failed');
     } finally {
       setSyncBusy(false);
     }
   }
 
-  const syncTone = firebaseEnabled ? (authUser ? (cloudDirty ? 'warn' : 'good') : 'muted') : 'muted';
-  const syncLabel = firebaseEnabled ? (authUser ? 'Cloud sync' : 'Local mode') : 'Firebase not configured';
+  const syncTone = supabaseEnabled ? (authUser ? (cloudDirty ? 'warn' : 'good') : 'muted') : 'muted';
+  const syncLabel = supabaseEnabled ? (authUser ? 'Cloud sync' : 'Local mode') : 'Supabase not configured';
 
   return (
     <div className="shell">
@@ -640,7 +640,7 @@ export default function App() {
 
         <div className="sync-panel panel">
           <div className="note-head">
-            {firebaseEnabled ? <Cloud size={16} /> : <CloudOff size={16} />}
+            {supabaseEnabled ? <Cloud size={16} /> : <CloudOff size={16} />}
             <span>{syncLabel}</span>
           </div>
           <div className="sync-summary">
@@ -648,20 +648,20 @@ export default function App() {
             {authUser ? (
               <div className="sync-user">
                 <UserCircle2 size={16} />
-                <span>{authUser.displayName || authUser.email || 'Signed in'}</span>
+                <span>{authUser.user_metadata?.full_name || authUser.email || 'Signed in'}</span>
               </div>
             ) : null}
           </div>
           <p>
-            {firebaseEnabled
+            {supabaseEnabled
               ? authUser
-                ? 'Your tasks, classes, and GPA settings sync to Firestore.'
+                ? 'Your tasks, classes, and GPA settings sync to Supabase.'
                 : 'Connect Google to save this LockIn data across devices.'
-              : 'Add Firebase env keys to enable account-based cloud sync.'}
+              : 'Add Supabase env keys to enable account-based cloud sync.'}
           </p>
           {cloudError ? <div className="sync-error">{cloudError}</div> : null}
           <div className="sync-actions">
-            {firebaseEnabled ? (
+            {supabaseEnabled ? (
               authUser ? (
                 <>
                   <button type="button" className="primary-button" onClick={handleSaveToCloud} disabled={syncBusy || !cloudDirty}>
