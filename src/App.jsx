@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import {
   AlertCircle,
   BookOpen,
@@ -309,6 +309,8 @@ export default function App() {
   const [cloudStatus, setCloudStatus] = useState(firebaseEnabled ? 'Waiting for sign-in' : 'Local-only mode');
   const [cloudError, setCloudError] = useState('');
   const [syncBusy, setSyncBusy] = useState(false);
+  const saveDebounceRef = useRef(null);
+  const saveChainRef = useRef(Promise.resolve());
 
   useEffect(() => {
     saveClasses(classes);
@@ -399,26 +401,42 @@ export default function App() {
 
     let cancelled = false;
 
-    saveUserAppState(authUser.uid, cloudPayload)
-      .then(() => {
-        if (cancelled) return;
-        setCloudStatus('Cloud sync active');
-        setCloudError('');
-      })
-      .catch((error) => {
-        if (cancelled) return;
-        console.error(error);
-        setCloudError(error.message || 'Unable to sync to Firestore.');
-        setCloudStatus('Fell back to local mode');
-      })
-      .finally(() => {
-        if (!cancelled) {
-          setSyncBusy(false);
-        }
-      });
+    if (saveDebounceRef.current) {
+      clearTimeout(saveDebounceRef.current);
+    }
+
+    saveDebounceRef.current = setTimeout(() => {
+      if (!cancelled) {
+        setSyncBusy(true);
+        setCloudStatus('Saving changes');
+      }
+
+      saveChainRef.current = saveChainRef.current
+        .catch(() => {})
+        .then(() => saveUserAppState(authUser.uid, cloudPayload))
+        .then(() => {
+          if (cancelled) return;
+          setCloudStatus('Cloud sync active');
+          setCloudError('');
+        })
+        .catch((error) => {
+          if (cancelled) return;
+          console.error(error);
+          setCloudError(error.message || 'Unable to sync to Firestore.');
+          setCloudStatus('Fell back to local mode');
+        })
+        .finally(() => {
+          if (!cancelled) {
+            setSyncBusy(false);
+          }
+        });
+    }, 350);
 
     return () => {
       cancelled = true;
+      if (saveDebounceRef.current) {
+        clearTimeout(saveDebounceRef.current);
+      }
     };
   }, [authReady, authUser, cloudPayload, cloudReady]);
 
